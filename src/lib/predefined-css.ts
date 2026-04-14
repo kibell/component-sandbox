@@ -71,6 +71,7 @@ export const predefinedCSS = `
   --pattern-blue-bg: url(https://image.dream.snhu.edu/lib/fe9213737461067576/m/1/0e9beb24-4e20-432f-9afa-5bc95f5f6fea.png);
   --wolak-image-header: url(https://image.dream.snhu.edu/lib/fe9213737461067576/m/1/34bf305b-a496-447b-9c96-802c535a7b0f.jpg);
 --weekly-planner-bg: url(https://image.dream.snhu.edu/lib/fe9213737461067576/m/1/1418ed12-975e-487d-9e3b-a76721b73efe.png);
+--registration-bg: url(https://image.dream.snhu.edu/lib/fe9213737461067576/m/1/4903ad99-88ac-45f4-957f-80a2905f97d8.png);
   /* Icons */
   --todo-arrow-icon: url(https://image.dream.snhu.edu/lib/fe9213737461067576/m/1/3f7963aa-5c25-44d5-8331-e9e66d150ae2.png);
   --todo-star-icon: url(https://image.dream.snhu.edu/lib/fe9213737461067576/m/1/9c877441-c2ff-48a8-bea6-aa09e963a5c9.png);
@@ -692,6 +693,10 @@ a.text-link:hover, .text-link a:hover { text-decoration-thickness: 2px; }
       background-image: var(--weekly-planner-bg);
     }
 
+    .registration-bg {
+      background-image: var(--registration-bg);
+    }
+
     /* Card styles  */
     .card {
       padding: var(--space-5);
@@ -998,25 +1003,21 @@ border: solid 2px;
 }
 `;
 
-export const defaultCode = `<div class="container py-8">
-  <div class="grid grid-cols-3 gap-4 mb-6">
-    <div class="card animate-fade">
-      <p class="text-muted text-sm mb-2">Total Users</p>
-      <p class="text-2xl font-bold text-dark">12,847</p>
-      <span class="badge badge-primary mt-2">+12%</span>
-    </div>
-    <div class="card animate-fade">
-      <p class="text-muted text-sm mb-2">Revenue</p>
-      <p class="text-2xl font-bold text-dark">$48,290</p>
-      <span class="badge badge-secondary mt-2">+8.1%</span>
-    </div>
-    <div class="card animate-fade">
-      <p class="text-muted text-sm mb-2">Active Now</p>
-      <p class="text-2xl font-bold text-dark">573</p>
-      <span class="badge badge-danger mt-2">-2.4%</span>
+export const defaultCode = `<header class="bg-white">
+<nav class="navbar navbar-expand-lg p-3 navbar-bg-white">
+  <div class="container">
+    <a class="navbar-brand" href="https://www.snhu.edu/">
+      <img class="logo-blue-text" alt="SNHU Logo" height="80" />
+    </a>
+    <div class="justify-content-end" id="navbarNavAltMarkup">
+      <div class="navbar-nav d-flex">
+        <a href="Tel:8883870861" class="nav-link mx-3 text-center" target="_blank">Call <br> 888.387.0864</a>
+        <a href="sms:21216" class="nav-link mx-3 text-center" target="_blank">Text <br> 21216</a>
+      </div>
     </div>
   </div>
-</div>`;
+</nav>
+</header>`;
 
 export const lockedLayoutTemplate = `<!doctype html>
 <html lang="en">
@@ -1145,7 +1146,9 @@ export const composeLockedMarkup = (userContent: string): string => {
   return lockedLayoutTemplate.replace(contentSlotToken, userContent);
 };
 
-export const extractUserContentFromLockedMarkup = (markup: string): string | null => {
+export const extractUserContentFromLockedMarkup = (
+  markup: string,
+): string | null => {
   if (!lockedLayoutTemplate.includes(contentSlotToken)) {
     return null;
   }

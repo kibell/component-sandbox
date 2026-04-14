@@ -7,6 +7,7 @@ import {
   Eye,
   BookOpen,
   RotateCcw,
+  Eraser,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import CodeEditor from "@/components/CodeEditor";
@@ -35,7 +36,16 @@ const Index = () => {
     try {
       const text = await navigator.clipboard.readText();
       const extractedContent = extractUserContentFromLockedMarkup(text);
-      setCode(extractedContent ?? text);
+      const pastedContent = extractedContent ?? text;
+      setCode((currentCode) => {
+        const trimmedCurrent = currentCode.trimEnd();
+        const trimmedPasted = pastedContent.trim();
+
+        if (!trimmedCurrent) return trimmedPasted;
+        if (!trimmedPasted) return trimmedCurrent;
+
+        return `${trimmedCurrent}\n\n${trimmedPasted}`;
+      });
       toast.success("Pasted from clipboard");
     } catch {
       toast.error("Unable to read clipboard");
@@ -45,6 +55,11 @@ const Index = () => {
   const handleReset = useCallback(() => {
     setCode(defaultCode);
     toast("Reset to default");
+  }, []);
+
+  const handleClear = useCallback(() => {
+    setCode("");
+    toast("Editor cleared");
   }, []);
 
   return (
@@ -81,6 +96,13 @@ const Index = () => {
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
           >
             <RotateCcw className="w-3.5 h-3.5" />
+          </button>
+          <button
+            onClick={handleClear}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+          >
+            <Eraser className="w-3.5 h-3.5" />
+            Clear
           </button>
           <button
             onClick={() => setShowReference(!showReference)}
