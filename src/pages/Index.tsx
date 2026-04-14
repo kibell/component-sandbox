@@ -1,10 +1,22 @@
 import { useState, useCallback } from "react";
-import { Copy, Check, ClipboardPaste, Code2, Eye, BookOpen, RotateCcw } from "lucide-react";
+import {
+  Copy,
+  Check,
+  ClipboardPaste,
+  Code2,
+  Eye,
+  BookOpen,
+  RotateCcw,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import CodeEditor from "@/components/CodeEditor";
 import PreviewPane from "@/components/PreviewPane";
 import CssReference from "@/components/CssReference";
-import { defaultCode } from "@/lib/predefined-css";
+import {
+  composeLockedMarkup,
+  defaultCode,
+  extractUserContentFromLockedMarkup,
+} from "@/lib/predefined-css";
 import { toast } from "sonner";
 
 const Index = () => {
@@ -13,7 +25,7 @@ const Index = () => {
   const [showReference, setShowReference] = useState(false);
 
   const handleCopy = useCallback(async () => {
-    await navigator.clipboard.writeText(code);
+    await navigator.clipboard.writeText(composeLockedMarkup(code));
     setCopied(true);
     toast.success("Copied to clipboard");
     setTimeout(() => setCopied(false), 2000);
@@ -22,7 +34,8 @@ const Index = () => {
   const handlePaste = useCallback(async () => {
     try {
       const text = await navigator.clipboard.readText();
-      setCode(text);
+      const extractedContent = extractUserContentFromLockedMarkup(text);
+      setCode(extractedContent ?? text);
       toast.success("Pasted from clipboard");
     } catch {
       toast.error("Unable to read clipboard");
@@ -40,7 +53,9 @@ const Index = () => {
       <header className="flex items-center justify-between px-4 h-12 bg-toolbar-bg border-b border-border shrink-0">
         <div className="flex items-center gap-2">
           <Code2 className="w-5 h-5 text-primary" />
-          <h1 className="text-sm font-semibold text-foreground tracking-tight">LivePreview IDE</h1>
+          <h1 className="text-sm font-semibold text-foreground tracking-tight">
+            LivePreview IDE
+          </h1>
         </div>
         <div className="flex items-center gap-1">
           <button
@@ -54,7 +69,11 @@ const Index = () => {
             onClick={handleCopy}
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
           >
-            {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+            {copied ? (
+              <Check className="w-3.5 h-3.5" />
+            ) : (
+              <Copy className="w-3.5 h-3.5" />
+            )}
             {copied ? "Copied!" : "Copy"}
           </button>
           <button
@@ -66,7 +85,9 @@ const Index = () => {
           <button
             onClick={() => setShowReference(!showReference)}
             className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-              showReference ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+              showReference
+                ? "bg-primary text-primary-foreground"
+                : "text-muted-foreground hover:text-foreground hover:bg-secondary"
             }`}
           >
             <BookOpen className="w-3.5 h-3.5" />
@@ -97,7 +118,9 @@ const Index = () => {
           <div className="flex items-center px-4 h-9 bg-toolbar-bg border-b border-border shrink-0">
             <div className="flex items-center gap-2">
               <Code2 className="w-3.5 h-3.5 text-muted-foreground" />
-              <span className="text-xs text-muted-foreground font-medium">index.html</span>
+              <span className="text-xs text-muted-foreground font-medium">
+                index.html
+              </span>
             </div>
           </div>
           <div className="flex-1 overflow-hidden">
@@ -110,7 +133,9 @@ const Index = () => {
           <div className="flex items-center px-4 h-9 bg-toolbar-bg border-b border-border shrink-0">
             <div className="flex items-center gap-2">
               <Eye className="w-3.5 h-3.5 text-muted-foreground" />
-              <span className="text-xs text-muted-foreground font-medium">Preview</span>
+              <span className="text-xs text-muted-foreground font-medium">
+                Preview
+              </span>
             </div>
           </div>
           <div className="flex-1 overflow-hidden">
