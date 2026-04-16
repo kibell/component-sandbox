@@ -14,6 +14,7 @@ import CodeEditor from "@/components/CodeEditor";
 import PreviewPane from "@/components/PreviewPane";
 import CssReference from "@/components/CssReference";
 import {
+  buildPreviewDocument,
   composeLockedMarkup,
   defaultCode,
   extractUserContentFromLockedMarkup,
@@ -61,6 +62,23 @@ const Index = () => {
     setCode("");
     toast("Editor cleared");
   }, []);
+
+  const handleOpenFullPreview = useCallback(() => {
+    const previewDocument = buildPreviewDocument(code);
+
+    const previewWindow = window.open("about:blank", "_blank");
+    if (!previewWindow) {
+      toast.error(
+        "Unable to open preview window. Please allow pop-ups for this site.",
+      );
+      return;
+    }
+
+    previewWindow.document.open();
+    previewWindow.document.write(previewDocument);
+    previewWindow.document.close();
+    previewWindow.focus();
+  }, [code]);
 
   return (
     <div className="flex flex-col h-screen bg-background overflow-hidden">
@@ -154,7 +172,14 @@ const Index = () => {
         <div className="flex-1 flex flex-col min-w-0">
           <div className="flex items-center px-4 h-9 bg-toolbar-bg border-b border-border shrink-0">
             <div className="flex items-center gap-2">
-              <Eye className="w-3.5 h-3.5 text-muted-foreground" />
+              <button
+                onClick={handleOpenFullPreview}
+                className="inline-flex items-center justify-center w-6 h-6 rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                title="Open full preview"
+                aria-label="Open full preview"
+              >
+                <Eye className="w-3.5 h-3.5" />
+              </button>
               <span className="text-xs text-muted-foreground font-medium">
                 Preview
               </span>

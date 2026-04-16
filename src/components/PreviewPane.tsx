@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { composeLockedMarkup, predefinedCSS } from "@/lib/predefined-css";
+import { buildPreviewDocument } from "@/lib/predefined-css";
 
 interface PreviewPaneProps {
   code: string;
@@ -15,21 +15,10 @@ const PreviewPane = ({ code }: PreviewPaneProps) => {
     const doc = iframe.contentDocument;
     if (!doc) return;
 
-    const composedMarkup = composeLockedMarkup(code);
+    const previewDocument = buildPreviewDocument(code);
 
     doc.open();
-    doc.write(`
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>${predefinedCSS}</style>
-</head>
-<body style="padding: 1rem; background: white;">
-  ${composedMarkup}
-</body>
-</html>`);
+    doc.write(previewDocument);
     doc.close();
   }, [code]);
 

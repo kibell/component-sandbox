@@ -621,8 +621,14 @@ a.text-link:hover, .text-link a:hover { text-decoration-thickness: 2px; }
 .nav-link.disabled{pointer-events:none;opacity:0.5;}
 .navbar>.container,.navbar>.container-fluid,.navbar>.container-lg,.navbar>.container-md,.navbar>.container-sm,.navbar>.container-xl,.navbar>.container-xxl{display:flex;flex-wrap:inherit;align-items:center;justify-content:space-between;flex-direction:column;}
 .navbar-expand-lg .navbar-nav{flex-direction:row; display: flex;}
-.navbar-bg-white > * {background-color:var(--color-white); color: var(--color-heritage); a {color: var(--color-heritage)}}
-.navbar-bg-blue > * {background-color:var(--color-heritage); color: var(--color-white); a {color: var(--color-white)}}
+.navbar-bg-white > * 
+{background-color:var(--color-white); color: var(--color-heritage); a {color: var(--color-heritage)} 
+.nav-logo { content: url(https://image.dream.snhu.edu/lib/fe9213737461067576/m/1/ad04e6c8-a5bc-49df-97a9-03bc057431f3.png) }
+
+}
+.navbar-bg-blue > * {background-color:var(--color-heritage); color: var(--color-white); a {color: var(--color-white)}
+.nav-logo { content: url(https://image.dream.snhu.edu/lib/fe9213737461067576/m/1/4da9d35f-9206-47f0-9636-3fa6659a30a7.png) }
+}
 
 /* Countdown nav */
 .countdown-nav > .container { flex-direction: column !important; }
@@ -1003,11 +1009,11 @@ border: solid 2px;
 }
 `;
 
-export const defaultCode = `<header class="bg-white">
-<nav class="navbar navbar-expand-lg p-3 navbar-bg-white">
+export const defaultCode = `<header class="navbar-bg-white">
+<nav class="navbar navbar-expand-lg p-3">
   <div class="container">
     <a class="navbar-brand" href="https://www.snhu.edu/">
-      <img class="logo-blue-text" alt="SNHU Logo" height="80" />
+      <img class="nav-logo" alt="SNHU Logo" height="80" />
     </a>
     <div class="justify-content-end" id="navbarNavAltMarkup">
       <div class="navbar-nav d-flex">
@@ -1067,7 +1073,7 @@ SET @refContent = ContentBlockByKey("9347d187-1058-4ce4-851f-f2251f6f7535")
   <meta name="keywords" content="">
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title> Weekly Planner </title>
+  <title> {Replace with the title of your page} </title>
   <link rel="stylesheet" type="text/css" href="https://cloud.dream.snhu.edu/GlobalThemCss">
 
   <!-- Google Fonts -->
@@ -1163,4 +1169,28 @@ export const extractUserContentFromLockedMarkup = (
   }
 
   return markup.slice(prefix.length, markup.length - suffix.length);
+};
+
+export const buildPreviewDocument = (userContent: string): string => {
+  const composedMarkup = composeLockedMarkup(userContent);
+
+  if (/<head[\s>]/i.test(composedMarkup)) {
+    return composedMarkup.replace(
+      /<\/head>/i,
+      `<style>${predefinedCSS}</style></head>`,
+    );
+  }
+
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>${predefinedCSS}</style>
+</head>
+<body style="background: white; margin: 0;">
+  ${composedMarkup}
+</body>
+</html>`;
 };
